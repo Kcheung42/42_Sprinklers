@@ -67,6 +67,14 @@ void registerWriteBytes(const void* buffer, byte byteCount);
 void Blink(byte PIN, byte DELAY_MS);
 int checkFreeRAM();
 
+typedef struct prog_t {
+	byte	programZone[32];
+	byte	pogramPointer=0;
+	byte	pogramSeconds[32];
+} prog_s;
+
+prog_s prog[7];
+
 void setup(void)
 {
 	Serial.begin(SERIAL_BAUD);
@@ -298,7 +306,7 @@ void registersWriteBit(byte whichPin)
 			return; 
 		}
 
-		digitalWrite(LATCHPIN, LOW);		
+		digitalWrite(LATCHPIN, LOW);
 		for (byte i=0;i<zeroFills;i++)
 			shiftOut(DATAPIN, CLOCKPIN, MSBFIRST, 0x0);
 		

@@ -54,7 +54,6 @@ export default class App extends Component {
 					_key: child.key
 				});
 			});
-			console.log(items)
 			this.setState({
 				itemDataSource: this.state.itemDataSource.cloneWithRows(items)
 			});
