@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import * as firebase from 'firebase'
 import Toolbar from './components/Toolbar/Toolbar';
-
+import Switch from './components/Switch/Switch';
 
 // Initialize Firebase
 const config = {
@@ -27,7 +27,8 @@ export default class App extends Component {
 		this.state = {
 			itemDataSource: ds
 		}
-		this.itemsRef = this.getRef().child('Sprink')
+		this.itemsRef = this.getRef().child('manualOverride')
+		// this.itemsRef = this.getRef().child('Sprink')
 		this.renderRow = this.renderRow.bind(this);
 	}
 
@@ -43,13 +44,20 @@ export default class App extends Component {
 		this.getItems(this.itemsRef);
 	}
 
+	toggleSwitch = (value, zone) => {
+		var dir = zone + '/active'
+		this.itemsRef.child(dir).set(value)
+		console.log(dir)
+		console.log('for zone: ' + zone)
+	}
+
 	getItems(itemsRef){
 		// let items = [{title: 'Item One'}, {title: 'Item Two'}];
 		itemsRef.on('value', (snap) => {
 			let items = [];
 			snap.forEach((child) => {
 				items.push({
-					status: child.val().status,
+					active: child.val().active,
 					duration: child.val().duration,
 					_key: child.key
 				});
@@ -62,7 +70,15 @@ export default class App extends Component {
 
 	renderRow(item){
 		return(
-			<Text>{item._key}:{item.status}:{item.duration}</Text>
+			<View style={styles.container}>
+			<Text>{item._key}:{String(item.active)}:{item.duration}</Text>
+			<SwitchExample style={styles.switch}
+				toggleSwitch = {this.toggleSwitch}
+				switchValue = {item.active}
+				zone = {item._key}
+				test = {item.active}
+			/>
+			</View>
 		)
 	}
 
@@ -88,4 +104,7 @@ const styles = StyleSheet.create({
 	alignItems: 'center',
 	justifyContent: 'center',
   },
+	switch: {
+		flex: 1
+	}
 });
